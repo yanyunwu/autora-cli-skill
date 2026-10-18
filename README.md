@@ -1,12 +1,12 @@
-# Autora Skill
+# Autora CLI Skill
 
-Autora CLI 的技能说明、安装脚本与预编译二进制。CLI 源码位于 [Autora](https://github.com/yanyunwu/autora/tree/main/crates/autora-cli)，本仓库由 Autora 根目录的 `autora-skill` Git 子模块固定引用。
+Autora CLI 的技能说明、安装脚本与预编译二进制。CLI 源码位于 [Autora](https://github.com/yanyunwu/autora/tree/main/crates/autora-cli)，本仓库由 Autora 根目录的 `autora-cli-skill` Git 子模块固定引用。
 
 ## 安装
 
 ```sh
-git clone https://github.com/yanyunwu/autora-skill.git
-cd autora-skill
+git clone https://github.com/yanyunwu/autora-cli-skill.git
+cd autora-cli-skill
 sh install.sh
 ```
 

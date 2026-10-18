@@ -1,15 +1,15 @@
 ---
-name: autora-cli
+name: autora-cli-skill
 description: 使用 autora 命令行工具完成文章、评论、友链、媒体及已授权的账号角色操作；需要了解安装、子命令、文件输入或结果处理时使用。
 ---
 
-# Autora CLI
+# Autora CLI Skill
 
 整个 Skill 仓库可独立分发，已包含 `scripts/linux-amd64/autora`、`scripts/linux-arm64/autora` 和 `scripts/darwin-arm64/autora` 三个平台的二进制；安装脚本自动选择本机对应文件。生成的单平台分发包使用 `scripts/autora`（Windows 为 `scripts/autora.exe`）。
 
 ## 安装与开始
 
-如果当前技能副本只保存文本、没有平台二进制，先从 [公开的 autora-skill 仓库](https://github.com/yanyunwu/autora-skill) 取得完整安装包并进入该目录。同一执行环境只需安装一次 CLI，各岗位继续使用自己的独立令牌。
+如果当前技能副本只保存文本、没有平台二进制，先从 [公开的 autora-cli-skill 仓库](https://github.com/yanyunwu/autora-cli-skill) 取得完整安装包并进入该目录。同一执行环境只需安装一次 CLI，各岗位继续使用自己的独立令牌。
 
 在完整 Skill 目录运行：
 
