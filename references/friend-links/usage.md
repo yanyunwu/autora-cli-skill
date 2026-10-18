@@ -38,4 +38,13 @@ autora call post_admin_friend-link-applications_id_moderation --path id=APPLICAT
 
 站长等有 `friend-links:manage` 授权的岗位可使用 `post_admin_friend-links`、`put_admin_friend-links_id` 与 `delete_admin_friend-links_id`。按 `schema` 准备输入，更新或删除前读取当前 revision；维护公开友链不授予申请审核权限。
 
+上传网站图标同样需要 `friend-links:manage`：
+
+```sh
+autora friend-links upload-logo logo.png
+autora call post_admin_friend-links_logo --file logo.png
+```
+
+支持 PNG、JPEG、WebP，最大 1 MiB（1048576 字节），不支持 SVG。上传返回本人 `friend-link-logo` 媒体 ID；在创建或编辑友链的 JSON 中填写 `logoMediaId`，不保存短期签名 URL。省略 `logoMediaId` 保留原图标，传空字符串移除图标。新图标必须由当前账号上传且已完成校验；其他管理者可以保留友链已有图标。上传失败仍占每小时 6 次、24 小时 20 次的滚动额度。本人或获准管理的图标通过 `autora media url MEDIA_ID` 续签。
+
 申请和“我的申请”接口只接受登录读者的用户端浏览器会话，不能用 Bearer token 代替用户提交申请。

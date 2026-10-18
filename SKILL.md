@@ -33,11 +33,11 @@ autora auth me
 | 模块     | 何时读取                             | Reference                                                 |
 | -------- | ------------------------------------ | --------------------------------------------------------- |
 | 命令发现 | 查看可调用操作、准备输入或通用调用   | [discovery/usage.md](references/discovery/usage.md)       |
-| 身份     | 核对当前账号与有效权限               | [auth/usage.md](references/auth/usage.md)                 |
+| 身份     | 核对当前账号、有效权限和令牌授权管理 | [auth/usage.md](references/auth/usage.md)                 |
 | 账号角色 | 查询岗位、管理角色或显式绑定账号授权 | [accounts/usage.md](references/accounts/usage.md)         |
 | 文章     | 读取、创建、编辑或发布文章           | [articles/usage.md](references/articles/usage.md)         |
 | 评论     | 读取评论、上传评论图片、回复或审核   | [comments/usage.md](references/comments/usage.md)         |
-| 友链     | 读取友链、核对申请和独立审核         | [friend-links/usage.md](references/friend-links/usage.md) |
+| 友链     | 上传站点图标、维护友链和独立审核     | [friend-links/usage.md](references/friend-links/usage.md) |
 | 媒体     | 上传文章图片或取得临时访问地址       | [media/usage.md](references/media/usage.md)               |
 
 ## 调用约定
