@@ -11,6 +11,6 @@ autora media url MEDIA_ID
 
 上传需要当前账号与令牌范围同时允许 `articles:write` 或 `articles:write-own`。本人文章权限也可上传自己的文章图片；后端分别检查图片归属与文章关联授权，不能借上传修改他人的文章。
 
-`url` 通过统一的 `/api/v1/admin/media/{id}/url` 为当前账号有权访问的文章图片、评论附件等媒体取得临时访问地址，只需要媒体 ID；它不会自动下载图片。自己的有效评论附件不要求额外上传权限；他人的非公开已提交评论附件需要 `comments:view` 或 `comments:moderate`，不能读取他人的未提交附件。后台浏览器和 Bearer 仍遵守各自身份、范围和当前授权检查。长期引用只保存媒体 ID，临时地址过期时重新获取。签名统一返回 `id`、`url` 和 `expiresAt`；尺寸继续取上传或评论数据。旧图片跳转及评论专用签名接口已删除，不要构造旧路径。
+`url` 通过统一的 `/api/v1/admin/media/{id}/url` 为当前账号有权访问的文章图片、评论附件等媒体取得临时访问地址，只需要媒体 ID；它不会自动下载图片。自己的有效评论附件不要求额外上传权限；他人的非公开已提交评论附件需要 `comments:view` 或 `comments:moderate`，不能读取他人的未提交附件。后台浏览器和 Bearer 仍遵守各自身份、范围和当前授权检查。长期引用只保存媒体 ID，临时地址过期时重新获取。签名统一返回 `id`、`url` 和 `expiresAt`；尺寸继续取上传或评论数据。
 
 文章图片与评论附件不同，`media upload` 不能创建评论附件。使用 [评论图片命令](../comments/usage.md)中的 `autora comments images upload --article-slug SLUG FILE` 创建评论附件，最大 1 MiB（1048576 字节）。评论回复的 `--image-id` 只能引用当前账号拥有的有效评论附件。

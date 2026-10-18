@@ -24,7 +24,7 @@ Linux 产物为静态 musl 可执行文件。`SHA256SUMS` 记录三份二进制�
 
 ## 维护
 
-在 Autora 主仓库初始化子模块后，`make cli-build` 编译当前平台的原生 CLI；在 macOS 上更新对应子模块二进制与校验值，GNU Linux 原生产物保留在 `target/release`，不会覆盖受维护的静态版本。`make cli-build-linux` 构建两个 Linux 静态版本；更新 macOS arm64 版本需在 Apple Silicon Mac 上运行 `make cli-build`。其他平台的本地构建不属于上述三份受维护产物。
+技能文档、安装器和二进制在独立发布工作区维护。Autora 主工作区只消费本仓库已发布的提交，更新子模块指针。在独立发布工作区使用 Autora 源码执行 `make cli-build-linux` 构建两个 Linux 静态版本，在 Apple Silicon Mac 上运行 `make cli-build` 更新 macOS arm64 产物及校验值；GNU Linux 原生产物保留在 `target/release`。
 
 CLI 或 OpenAPI 更新后应重新构建对应产物，并在主仓库运行 `make cli-check`。维护文件和二进制一起提交：先提交、推送本仓库的 `main`，再提交主仓库的子模块指针。父仓库以精确提交引用本仓库，普通 `git submodule update --init` 不会自动升级到最新版本。
 
