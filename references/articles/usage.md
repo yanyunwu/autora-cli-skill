@@ -23,6 +23,8 @@ autora articles publication ARTICLE_ID --body-file publication.json
 
 输入文件内容通过 [命令发现](../discovery/usage.md)准备；`--body-file -` 可改为 stdin。创建默认是草稿；需要直接发布时，按 schema 显式提供 `publicationStatus: "published"` 并核对发布权限。已有文章的单独状态变更使用 `publication`。
 
+草稿的标题、地址、摘要、正文和分类可留空。新建未填地址时生成稳定唯一地址；编辑留空时保留原地址。草稿、已发布和归档文章都可无分类；保存时分类传 null、空值或省略均表示不设置分类，不会自动选择或创建分类。最小草稿请求为 `{"mediaIds":[],"coverMediaId":null}`；更新仍需 `expectedRevision`。发布前必须补齐非空标题、摘要和正文。
+
 文章配图先通过 `autora media upload FILE` 上传，再在 `body` 中插入 `<MdxImage mediaId="上传返回的图片ID" alt="图片说明" />`。正文保存图片 ID，展示时统一获取临时 URL；不要把签名链接、对象 key 或旧图片路径写进正文。
 
 每次 `create/update` 都必须提交 `mediaIds` 数组，声明最终正文要关联的图片 ID；没有正文配图时也必须传 `[]`。字段遗漏、null、重复或格式错误都会被拒绝，后端不会解析正文或自动保留旧关联。正文示例和代码块中的 ID 不应加入数组。图片仍逐个检查归属、ready 状态和引用权限，声明 ID 不会授予访问权。
