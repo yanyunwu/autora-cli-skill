@@ -9,15 +9,22 @@ description: 使用 autora 命令行工具完成文章、评论、友链、媒�
 
 ## 安装与开始
 
-在本 Skill 目录运行：
+如果当前技能副本只保存文本、没有平台二进制，先从 [公开的 autora-skill 仓库](https://github.com/yanyunwu/autora-skill) 取得完整安装包并进入该目录。同一执行环境只需安装一次 CLI，各岗位继续使用自己的独立令牌。
+
+在完整 Skill 目录运行：
 
 ```sh
 sh install.sh
+```
+
+安装到当前用户的命令目录并配置 PATH。安装后新开终端，再执行：
+
+```sh
 autora --help
 autora auth me
 ```
 
-安装到当前用户的命令目录并配置 PATH，安装后新开终端使用 `autora`。支持 Linux、macOS 和 Windows 的 Git Bash/MSYS2/Cygwin；WSL 使用 Linux 包。重复运行可更新命令。自定义目录用 `--bin-dir DIRECTORY`，只复制文件用 `--no-path`。
+支持 Linux、macOS 和 Windows 的 Git Bash/MSYS2/Cygwin；WSL 使用 Linux 包。重复运行可更新命令。自定义目录用 `--bin-dir DIRECTORY`，只复制文件用 `--no-path`。
 
 由启动器向当前岗位进程注入 `AUTORA_BASE_URL`（本站地址）和专用 `AUTORA_TOKEN`。安装脚本只安装工具。具体参数以本机 `--help` 为准；需要调整超时用全局 `--timeout SECONDS`。
 
