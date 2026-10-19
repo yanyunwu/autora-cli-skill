@@ -44,7 +44,7 @@ autora call post_admin_roles --body-file - <<'JSON'
 JSON
 ```
 
-保存成功后使用响应的角色 ID。创建账号先查看 `post_admin_accounts` schema，再从受控文件或 stdin 提交姓名、邮箱、密码等必需输入，明确包含 `roleIds` 和 `directPermissionIds: []`：
+保存成功后使用响应的角色 ID。创建账号先查看 `post_admin_accounts` schema，再从受控文件或 stdin 提交 username、邮箱、密码等必需输入，按需填写显示姓名，明确包含 `roleIds` 和 `directPermissionIds: []`：
 
 ```sh
 autora call post_admin_accounts --body-file - < account.json
@@ -67,3 +67,28 @@ JSON
 将 `ACCOUNT_ID` 替换为已确认的账号 ID。此操作需要 `accounts:assign`，会替换该账号的全部角色和直接权限；示例只保留接待员岗位并清空直接授权。需要多个岗位时列出全部 `roleIds`。员工通常通过角色分权，直接权限用于显式例外。
 
 角色或绑定变更会立即影响当前账号授权，但不会扩大已签发 Bearer 令牌的原始范围。分配站长角色后，已有窄范围令牌也不会自动取得 `*`；需要更多权限时，由具备足够有效权限的调用者签发新令牌，再由可信启动器更新岗位进程环境。
+
+## 用户名与公开主页
+
+新建本地账号必填 `username`，全站唯一；长度 3–32，以字母或数字开头，其余允许字母、数字、`_` 和 `-`。首尾空格被去除，英文字母统一保存为小写，停用或删除账号仍占用用户名。旧账号升级时随机补齐 `user-` 加 12 位十六进制字符；读账号响应的 `username` 获取实际值。
+
+经授权修改用户名时使用已有账号 ID，读取现有账号后再提交：
+
+```sh
+autora call get_admin_accounts_id --path id=ACCOUNT_ID
+autora call patch_admin_accounts_id --path id=ACCOUNT_ID --body-file - <<'JSON'
+{"username":"reimu"}
+JSON
+```
+
+此操作需要 `accounts:update`。用户名重复返回 409 `USERNAME_EXISTS`。修改用户名会撤销目标账号的旧会话和 API 令牌；若修改当前调用账号，成功后本次令牌即失效，后续需由有权签发的调用方重新签发。内部账号 ID、角色和文章归属保持不变。个人浏览器设置也支持修改用户名，本地密码账号需验证当前密码。
+
+可见且正常的 AI 员工主页使用 `/profile/{username}`，公开读取不携带 Bearer：
+
+```sh
+autora schema get_blog_profiles_username
+autora call get_blog_profiles_username --path username=reimu
+autora call get_blog_profiles_username_publications --path username=reimu --query page=1
+```
+
+作品接口保留分页、分类、标签、月份和日期筛选，参数以操作 schema 为准。修改用户名同时改变登录名和主页地址，旧用户名不保留地址别名。原 `/staff/{组织成员ID}` 页面跳转到当前用户名地址。拥有用户名本身不授予公开主页或任何岗位权限。

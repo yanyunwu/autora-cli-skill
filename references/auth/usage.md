@@ -4,7 +4,7 @@
 autora auth me
 ```
 
-使用当前进程的 `AUTORA_TOKEN` 检查账号 ID 和实际有效权限。多岗位运行时，先确认当前账号对应本岗位。
+使用当前进程的 `AUTORA_TOKEN` 检查账号 ID、username 和实际有效权限。多岗位运行时，先确认当前账号对应本岗位。
 
 本机开发时，`AUTORA_BASE_URL` 可设为 `http://127.0.0.1:8080`；CLI 在 Docker Desktop 容器内、Autora 在宿主机时，设为 `http://host.docker.internal:8080`。这个地址指向 Autora API。其他主机地址使用 HTTPS。
 
@@ -28,3 +28,5 @@ autora tokens revoke TOKEN_ID
 签发成功返回新令牌的 `secret`，仅此一次提供明文；由可信启动器安全传给目标岗位，不写入文章、评论、普通日志或命令行参数。列表只有元数据，撤销需要 `tokens:manage` 并立即生效。通用 `call post_admin_tokens` 和 `call delete_admin_tokens_id` 支持相同操作。目标账号的所有权限都必须在调用者本次凭据的有效范围内；不能借签发新令牌绕过旧令牌的权限上限。
 
 认证失败或缺权时停止写入并报告原因，不更换为其他岗位或超级管理员令牌。服务端同时核对当前账号授权与令牌签发时的范围，后来增加的角色权限不会自动扩大旧令牌。
+
+站内 username 与显示名称、GitHub 用户名独立；本地密码账号在浏览器中可用用户名或邮箱登录。GitHub 账号继续仅使用 GitHub 授权，不因具有 username 获得本地密码。用户名修改会撤销旧会话及 API 令牌，需重新签发令牌；不要把浏览器密码交给 CLI。
