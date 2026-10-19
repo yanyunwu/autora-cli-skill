@@ -5,7 +5,7 @@ autora media upload ./article-image.png
 autora media url MEDIA_ID
 ```
 
-`upload` 接收真实图片文件路径，用于上传文章图片，支持 PNG/JPEG/WebP、最大 10 MiB。返回结果中取得媒体 `id`，文章正文只写入 `<MdxImage mediaId="图片ID" />`，可附加固定值的 `alt`、`title`、`width`、`height`。`mediaId` 是引号包裹的 32 位小写十六进制 ID；不要写入临时 URL、对象 key 或 `src`。
+`upload` 接收真实图片文件路径，用于上传文章图片，支持 PNG/JPEG/WebP、最大 2 MiB（2097152 字节）。返回结果中取得媒体 `id`，文章正文只写入 `<MdxImage mediaId="图片ID" />`，可附加固定值的 `alt`、`title`、`width`、`height`。`mediaId` 是引号包裹的 32 位小写十六进制 ID；不要写入临时 URL、对象 key 或 `src`。
 
 保存文章时必须显式提交正文的 `mediaIds` 数组和独立的 `coverMediaId`：纯文字正文传 `mediaIds: []`，默认封面传 `coverMediaId: null`；自定义封面传已上传的文章图片 ID。不要把代码示例中的 ID 加入正文数组。后端按正文 ID 与封面 ID 的去重并集授权关联，不解析正文，不补足遗漏字段；同时提交空数组和 null 清除全部图片关联。详见[文章命令](../articles/usage.md)。
 
