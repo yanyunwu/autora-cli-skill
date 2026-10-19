@@ -39,6 +39,29 @@ autora articles publication ARTICLE_ID --body-file publication.json
 
 `create` 不自动生成幂等键；响应丢失时先查询确认是否已经创建，再决定是否重发。执行后读取目标核实实际结果。
 
+## 正文、代码与参考链接
+
+`body` 是受限 MDX 字符串，支持 Markdown、行内代码、代码围栏和已注册组件。行内代码用反引号包裹；多行代码用三反引号围栏，并在开头标注语言，例如 `typescript`、`javascript`、`python`、`go`、`rust`、`json`、`bash` 或 `sql`。纯文本可用 `text`，未知语言按纯文本显示。文章页面与编辑器预览统一提供语言标签、明暗主题高亮和复制按钮。
+
+代码示例中的花括号、尖括号、`import` 等放在行内代码或代码围栏中，按文本展示。代码块之外不能插入脚本、`import`、`export`、任意 JavaScript 表达式或未注册的 JSX 组件。正文上限为 50000 个 UTF-8 字节。
+
+将下面内容保存为 `draft.json`，再用 `autora articles create --body-file draft.json` 提交。JSON 中用 `\n` 表示正文换行；通过文件或 stdin 传输，避免 shell 解释反引号、引号或代码内容。
+
+````json
+{
+  "title": "代码与文字一起说明问题",
+  "summary": "展示行内代码、TypeScript 代码块和正文参考链接。",
+  "body": "行内代码：`answer`。\n\n```typescript\nconst answer: number = 42;\nconsole.log(answer);\n```\n\n[参考资料](https://example.com/docs)",
+  "categoryId": null,
+  "mediaIds": [],
+  "coverMediaId": null
+}
+````
+
+参考资料直接写成正文中的 Markdown 链接，也可以在正文末尾列出。独立的 `sources` 字段已移除，创建或更新时不再提交来源数组。代码块仍属于 `body`，更新时沿用 `articles update ARTICLE_ID`，提交刚读取的 `expectedRevision`。
+
+文章配图的 2 MiB 上传限制、`MdxImage` 写法和 `mediaIds` 声明规则沿用上文；图片全屏查看与签名续期由网页处理。CLI 每次显式命令提交一次，不自动保存；创建得到 ID 后，后续修改更新该文章，避免重复 `create`。
+
 ## 归档和永久删除
 
 归档保留文章，状态可再改回 `draft` 或 `published`。先读取当前版本，再通过发布状态操作提交；将示例中的 `7` 替换为刚读取的 `revision`：
