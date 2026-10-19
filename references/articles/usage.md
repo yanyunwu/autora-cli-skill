@@ -11,7 +11,48 @@ autora articles admin-get ARTICLE_ID
 
 `list/get` 读取公开文章；`admin-list/admin-get` 读取当前账号有权访问的管理内容。公开详情用 slug，管理详情用 ID。列表默认第 1 页、每页 20 条，可用 `--page`、`--page-size` 显式翻页，每页上限 100。
 
-`articles:view-own` 只允许读取本人文章的管理内容，`articles:view` 可读取全站管理文章。管理响应可能包含当前对象的 `canEdit`、`canPublish` 和 `canDelete`；公开响应不返回这些字段。先核对当前身份与这些能力，服务端仍会在实际操作时重验授权。
+`articles:view-own` 只允许读取本人文章的管理内容，`articles:view` 可读取全站管理文章。管理响应可能包含当前对象的 `canEdit`、`canPublish`、`canDelete`、`canGlobalPin` 和 `canPersonalPin`；公开响应不返回这些能力字段。先核对当前身份与这些能力，服务端仍会在实际操作时重验授权。
+
+## 首页栏目
+
+首页栏目使用单独的读取接口，普通文章列表仍按发布时间排列：
+
+```sh
+autora schema get_blog_home_articles
+autora call get_blog_home_articles --query tab=hot --query page=1 --query pageSize=8
+```
+
+`tab` 支持 `hot`（默认）、`latest` 和 `activity`。最热统计全部已发布文章在最近 72 小时内的浏览次数，同热度时较新发布的在前；旧文章也可上榜，零浏览文章仍可展示。历史无时间戳的浏览仅保留在累计浏览量中，不推算为近期热度。最新按发布时间排列；活动按已有标签名“活动”精确筛选，较新发布的在前，没有该标签时返回空的普通列表。
+
+响应中的 `pinned` 是当前已发布的全局置顶文章，三个栏目都返回，最近置顶的靠前，不要求有活动标签。`items` 和 `total` 仅统计未全局置顶的普通文章；每页默认 8 篇，置顶不占分页名额。`publishedTotal` 是全站当前已发布数量。个人置顶不影响首页排序。
+
+继续加载时保留首次响应的 `asOf` 和栏目、页大小，只增加页码。将 `AS_OF` 替换为刚返回的时间字符串：
+
+```sh
+autora call get_blog_home_articles --query tab=hot --query page=2 --query pageSize=8 --query asOf=AS_OF
+```
+
+快照固定热度窗口和新发布文章的截止时间；当前撤回、删除、置顶和标签变动仍即时生效。CLI 每次读取一页，不自动遍历全部文章。
+
+## 全局置顶与个人置顶
+
+`globalPinnedAt` 和 `personalPinnedAt` 是独立状态，未置顶时为 null。全局置顶只用于首页，个人置顶只用于作者个人主页；文章内容更新不会清除任何一种置顶。草稿、归档文章可以保留置顶状态，只有发布后公开展示。置顶不通过普通文章保存接口设置。
+
+全局置顶需要独立的 `articles:pin` 权限，账户当前授权和令牌原始范围都必须允许；本人文章的编辑或发布权限不能代替它。个人置顶不新增权限点，只允许当前账号操作存储作者为自己的文章，即使拥有 `*` 也不能替他人设置个人置顶。
+
+先读取管理文章的当前版本与逐篇能力，再发现相应操作。将示例中的 ID 与版本号替换为实际值；取消置顶时提交 `pinned: false`：
+
+```sh
+autora articles admin-get ARTICLE_ID
+autora schema put_admin_articles_id_global-pin
+autora call put_admin_articles_id_global-pin --path id=ARTICLE_ID --body-file - <<'JSON'
+{"pinned":true,"expectedRevision":7}
+JSON
+```
+
+个人置顶使用同样的输入格式，操作 ID 为 `put_admin_articles_id_personal-pin`。`put_user_articles_id_personal-pin` 是网页会话专用接口，可发现但不能由 CLI 调用；CLI 使用支持 Bearer 的管理接口，不需要管理员浏览器访问权限。
+
+成功响应仅返回 `id`、本次确认的 `revision` 和两个置顶时间，不返回文章正文。接下来的写入使用刚确认的版本；同状态操作不改变版本、时间或审计记录，旧版本即使同状态也返回 409。遇到冲突先重新读取核对；请求结果未知时先确认实际状态，不盲目重发。
 
 ## 写入
 
